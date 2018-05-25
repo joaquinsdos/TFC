@@ -11,10 +11,10 @@ import proyectofinal.dam.joaquin.listacompra.R
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
-    private val lista: MutableList<Product> = mutableListOf()
+    private var lista: MutableList<Product> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = LayoutInflater.from(parent.getContext())
+        val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_producs, parent, false)
 
         return ViewHolder(itemView)
@@ -30,9 +30,17 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
         return lista.size
     }
 
+    fun setLista(lista: MutableList<Product>){
+        this.lista =lista
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Product) = with(itemView) {
             list__checkbox__comprado.isChecked=item.listo
+            list__checkbox__comprado.text=item.name
+            list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
+                item.listo=isChecked
+            }
         }
     }
 }
