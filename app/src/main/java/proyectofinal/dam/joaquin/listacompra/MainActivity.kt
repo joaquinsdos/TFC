@@ -6,13 +6,22 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import proyectofinal.dam.joaquin.listacompra.R.id.main__btn_action__new
+import proyectofinal.dam.joaquin.listacompra.model.Product
 
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var lista: MutableList<Product>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        lista = mutableListOf(Product(0, "leche", false),
+                Product(1, "leche", false),
+                Product(2, "leche", false)
+        )
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -25,8 +34,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             main__btn_action__new -> {
                 //TODO - crear producto nuevo en un nuevo activity o fragment y añadirlo a la lista
-                main__label__demo.text = getString(R.string.demo_text)
-
+                lista.add(Product((Math.random()*100+1).toInt(), "algo", false))
                 true
             }
             else -> {
