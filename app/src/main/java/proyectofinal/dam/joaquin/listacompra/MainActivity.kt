@@ -1,13 +1,14 @@
 package proyectofinal.dam.joaquin.listacompra
 
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_new_product.*
 import proyectofinal.dam.joaquin.listacompra.R.id.main__btn_action__new
 import proyectofinal.dam.joaquin.listacompra.adapter.ProductAdapter
 import proyectofinal.dam.joaquin.listacompra.model.Product
@@ -59,8 +60,9 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             main__btn_action__new -> {
                 //TODO - crear producto nuevo en un nuevo activity o fragment y añadirlo a la lista
-                lista.add(Product(0, "algo", false))
-                actualizarLista()
+                val dialogo = Dialogo()
+                dialogo.show(supportFragmentManager, "nuevo")
+
                 true
             }
             else -> {
@@ -76,15 +78,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAdapter() {
         adapter.setLista(lista)
-        adapter.setOnClickListener(View.OnClickListener {
-            Log.i("TAG", "onClicListener")
-            actualizarLista()
-        })
     }
 
     private fun actualizarLista() {
         lista.sortBy { it.listo }
         adapter.notifyDataSetChanged()
+    }
+
+
+    fun onCreateDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Dialog")
+        builder.setView(this.layoutInflater.inflate(R.layout.dialog_new_product, null))
+        builder.setPositiveButton("OK", { lalala, _ ->
+            lista.add(Product(0, dialog__txt__name.text.toString(), false))
+            actualizarLista()
+        })
+        builder.setNegativeButton("Cancel", { dialogInterface: DialogInterface, _: Int ->
+            dialogInterface.cancel()
+        })
+        builder.show()
     }
 
 }

@@ -9,19 +9,8 @@ import proyectofinal.dam.joaquin.listacompra.R
 import proyectofinal.dam.joaquin.listacompra.model.Product
 
 
-class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.OnClickListener {
+class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     private var lista: MutableList<Product> = mutableListOf()
-    private lateinit var listener: View.OnClickListener
-
-    override fun onClick(v: View?) {
-
-        listener.onClick(v)
-
-    }
-
-    fun setOnClickListener(listener: View.OnClickListener) {
-        this.listener = listener
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -30,7 +19,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.O
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(lista, position, this, this)
+        holder.bind(lista, this)
     }
 
     override fun getItemCount(): Int {
@@ -41,18 +30,25 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.O
         this.lista = lista
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(lista: MutableList<Product>, pos: Int, listener: View.OnClickListener, productAdapter: ProductAdapter) = with(itemView) {
-            list__checkbox__comprado.setOnClickListener(listener)
-            list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
-                lista[pos].listo = isChecked
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(lista: MutableList<Product>, productAdapter: ProductAdapter) = with(itemView) {
+            list__checkbox__comprado.setOnClickListener {
+                lista.sortBy { it.listo }
+                productAdapter.notifyDataSetChanged()
             }
-            list__checkbox__comprado.isChecked = lista[pos].listo
-            list__checkbox__comprado.text = lista[pos].name
+
+            list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
+                lista[layoutPosition].listo = isChecked
+            }
+
+            list__checkbox__comprado.isChecked = lista[layoutPosition].listo
+            list__checkbox__comprado.text = lista[layoutPosition].name
 
             list__btn__delete.setOnClickListener {
-                lista.removeAt(layoutPosition)
-                productAdapter.notifyItemRemoved(layoutPosition)
+                if (layoutPosition != -1) {
+                    lista.removeAt(layoutPosition)
+                    productAdapter.notifyItemRemoved(layoutPosition)
+                }
 
             }
 
