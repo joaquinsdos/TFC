@@ -1,16 +1,16 @@
 package proyectofinal.dam.joaquin.listacompra
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import proyectofinal.dam.joaquin.listacompra.R.id.main__btn_action__new
 import proyectofinal.dam.joaquin.listacompra.adapter.ProductAdapter
 import proyectofinal.dam.joaquin.listacompra.model.Product
-import android.support.v7.widget.LinearLayoutManager
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,16 +24,37 @@ class MainActivity : AppCompatActivity() {
 
         lista = mutableListOf(Product(0, "leche", false),
                 Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
+                Product(2, "verdadero", true),
+                Product(1, "falso", false),
                 Product(2, "verdadero", true)
         )
-
         lista.sortBy { it.listo }
         adapter.setLista(lista)
 
+        adapter.setOnClickListener(View.OnClickListener {
+            Log.i("TAG", "onClicListener")
+            lista.sortBy { it.listo }
+            adapter.notifyDataSetChanged()
+        })
 
-        main__list__products.adapter = adapter
         main__list__products.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
+        main__list__products.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
@@ -48,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             main__btn_action__new -> {
                 //TODO - crear producto nuevo en un nuevo activity o fragment y añadirlo a la lista
                 lista.add(Product(0, "algo", false))
+                lista.sortBy { it.listo }
                 adapter.notifyDataSetChanged()
                 true
             }
