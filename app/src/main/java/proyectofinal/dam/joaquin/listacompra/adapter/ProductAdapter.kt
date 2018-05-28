@@ -14,7 +14,9 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.O
     private lateinit var listener: View.OnClickListener
 
     override fun onClick(v: View?) {
+
         listener.onClick(v)
+
     }
 
     fun setOnClickListener(listener: View.OnClickListener) {
@@ -24,12 +26,11 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.O
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_producs, parent, false)
-        itemView.setOnClickListener(this)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(lista[position])
+        holder.bind(lista, position, this, this)
     }
 
     override fun getItemCount(): Int {
@@ -41,12 +42,20 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>(), View.O
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Product) = with(itemView) {
+        fun bind(lista: MutableList<Product>, pos: Int, listener: View.OnClickListener, productAdapter: ProductAdapter) = with(itemView) {
+            list__checkbox__comprado.setOnClickListener(listener)
             list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
-                item.listo = isChecked
+                lista[pos].listo = isChecked
             }
-            list__checkbox__comprado.isChecked = item.listo
-            list__checkbox__comprado.text = item.name
+            list__checkbox__comprado.isChecked = lista[pos].listo
+            list__checkbox__comprado.text = lista[pos].name
+
+            list__btn__delete.setOnClickListener {
+                lista.removeAt(layoutPosition)
+                productAdapter.notifyItemRemoved(layoutPosition)
+
+            }
+
         }
     }
 }

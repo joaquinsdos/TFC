@@ -44,18 +44,9 @@ class MainActivity : AppCompatActivity() {
                 Product(1, "falso", false),
                 Product(2, "verdadero", true)
         )
-        lista.sortBy { it.listo }
-        adapter.setLista(lista)
-
-        adapter.setOnClickListener(View.OnClickListener {
-            Log.i("TAG", "onClicListener")
-            lista.sortBy { it.listo }
-            adapter.notifyDataSetChanged()
-        })
-
-        main__list__products.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        main__list__products.adapter = adapter
-        adapter.notifyDataSetChanged()
+        setupAdapter()
+        setupRecycler()
+        actualizarLista()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,15 +60,31 @@ class MainActivity : AppCompatActivity() {
             main__btn_action__new -> {
                 //TODO - crear producto nuevo en un nuevo activity o fragment y añadirlo a la lista
                 lista.add(Product(0, "algo", false))
-                lista.sortBy { it.listo }
-                adapter.notifyDataSetChanged()
+                actualizarLista()
                 true
             }
             else -> {
                 super.onOptionsItemSelected(item)
             }
         }
-
-
     }
+
+    private fun setupRecycler() {
+        main__list__products.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        main__list__products.adapter = adapter
+    }
+
+    private fun setupAdapter() {
+        adapter.setLista(lista)
+        adapter.setOnClickListener(View.OnClickListener {
+            Log.i("TAG", "onClicListener")
+            actualizarLista()
+        })
+    }
+
+    private fun actualizarLista() {
+        lista.sortBy { it.listo }
+        adapter.notifyDataSetChanged()
+    }
+
 }
