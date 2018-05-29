@@ -1,3 +1,6 @@
 package proyectofinal.dam.joaquin.listacompra.model
 
-data class Product (var id: Int , var name: String, var listo: Boolean)
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+
+open class Product (@PrimaryKey var id: Int = 0, var name: String = "", var listo: Boolean = false) : RealmObject()
