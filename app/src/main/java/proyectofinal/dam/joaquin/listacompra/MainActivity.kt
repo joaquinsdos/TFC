@@ -27,7 +27,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         realm = Realm.getDefaultInstance()
         val results: RealmResults<Product> = realm.where(Product::class.java).findAll()
+
+
         lista.addAll(results)
+
+
         setupAdapter()
         setupRecycler()
         actualizarLista()

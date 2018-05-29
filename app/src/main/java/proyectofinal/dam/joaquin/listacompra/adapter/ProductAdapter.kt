@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.realm.Realm
 import kotlinx.android.synthetic.main.row_producs.view.*
 import proyectofinal.dam.joaquin.listacompra.R
 import proyectofinal.dam.joaquin.listacompra.model.Product
@@ -31,6 +32,9 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val realm: Realm = Realm.getDefaultInstance()
+
         fun bind(lista: MutableList<Product>, productAdapter: ProductAdapter) = with(itemView) {
             list__checkbox__comprado.setOnClickListener {
                 lista.sortBy { it.listo }
@@ -38,7 +42,11 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
             }
 
             list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
+
+                realm.beginTransaction()
                 lista[layoutPosition].listo = isChecked
+                realm.copyToRealmOrUpdate(lista[layoutPosition])
+                realm.commitTransaction()
             }
 
             list__checkbox__comprado.isChecked = lista[layoutPosition].listo
@@ -46,7 +54,10 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
             list__btn__delete.setOnClickListener {
                 if (layoutPosition != -1) {
-                    lista.removeAt(layoutPosition)
+                    realm.executeTransaction {
+                        lista[layoutPosition].deleteFromRealm()
+                        lista.removeAt(layoutPosition)
+                    }
                     productAdapter.notifyItemRemoved(layoutPosition)
                 }
 
