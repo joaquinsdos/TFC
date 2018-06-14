@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.row_producs.view.*
 import proyectofinal.dam.joaquin.listacompra.R
 import proyectofinal.dam.joaquin.listacompra.model.Product
 
-
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     private var lista: MutableList<Product> = mutableListOf()
 
@@ -40,18 +39,14 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
                 lista.sortBy { it.listo }
                 productAdapter.notifyDataSetChanged()
             }
-
             list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
-
                 realm.beginTransaction()
                 lista[layoutPosition].listo = isChecked
                 realm.copyToRealmOrUpdate(lista[layoutPosition])
                 realm.commitTransaction()
             }
-
             list__checkbox__comprado.isChecked = lista[layoutPosition].listo
             list__checkbox__comprado.text = lista[layoutPosition].name
-
             list__btn__delete.setOnClickListener {
                 if (layoutPosition != -1) {
                     realm.executeTransaction {

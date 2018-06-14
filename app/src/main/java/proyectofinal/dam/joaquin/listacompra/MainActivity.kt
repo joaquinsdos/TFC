@@ -18,7 +18,7 @@ import proyectofinal.dam.joaquin.listacompra.model.Product
 
 class MainActivity : AppCompatActivity() {
 
-    private var lista: MutableList<Product> = mutableListOf()
+    private var itemList: MutableList<Product> = mutableListOf()
     private val adapter: ProductAdapter = ProductAdapter()
     private lateinit var realm: Realm
 
@@ -27,14 +27,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         realm = Realm.getDefaultInstance()
         val results: RealmResults<Product> = realm.where(Product::class.java).findAll()
-
-
-        lista.addAll(results)
-
-
-        setupAdapter()
-        setupRecycler()
-        actualizarLista()
+        itemList.addAll(results)
+        adapter.setLista(itemList)
+        main__list__products.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        main__list__products.adapter = adapter
+        reloadList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -56,39 +53,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun newProductDialog() {
         val dialogView: View = layoutInflater.inflate(R.layout.dialog_new_product, null, false)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Nuevo elemento")
-        builder.setView(dialogView)
-                .setPositiveButton("Aceptar", { dialog, id ->
-
-                    realm.beginTransaction()
-                    var nuevoID = realm.where(Product::class.java).max("id")
-                    if (nuevoID == null) {
-                        nuevoID = 0
-                    }
-                    val product = realm.createObject(Product::class.java, nuevoID.toInt() + 1)
-
-                    product.name = dialogView.dialog__txt__name.text.toString()
-                    lista.add(0, product)
-                    realm.copyToRealm(product)
-                    realm.commitTransaction()
-                    actualizarLista()
-                    dialog.dismiss()
-                })
-        builder.create().show()
+        AlertDialog.Builder(this).apply {
+            setTitle("Nuevo elemento")
+            setView(dialogView)
+                    .setPositiveButton("Aceptar", { dialog, id ->
+                        realm.beginTransaction()
+                        var nuevoID = realm.where(Product::class.java).max("id")
+                        if (nuevoID == null) {
+                            nuevoID = 0
+                        }
+                        val product = realm.createObject(Product::class.java, nuevoID.toInt() + 1)
+                        product.name = dialogView.dialog__txt__name.text.toString()
+                        itemList.add(0, product)
+                        realm.copyToRealm(product)
+                        realm.commitTransaction()
+                        reloadList()
+                        dialog.dismiss()
+                    })
+            create().show()
+        }
     }
 
-    private fun setupRecycler() {
-        main__list__products.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        main__list__products.adapter = adapter
-    }
-
-    private fun setupAdapter() {
-        adapter.setLista(lista)
-    }
-
-    private fun actualizarLista() {
-        lista.sortBy { it.listo }
+    private fun reloadList() {
+        itemList.sortBy { it.listo }
         adapter.notifyDataSetChanged()
     }
 }
