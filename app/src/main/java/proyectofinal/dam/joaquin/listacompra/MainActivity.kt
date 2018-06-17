@@ -15,10 +15,9 @@ import proyectofinal.dam.joaquin.listacompra.R.id.main__btn_action__new
 import proyectofinal.dam.joaquin.listacompra.adapter.ProductAdapter
 import proyectofinal.dam.joaquin.listacompra.model.Product
 
-
 class MainActivity : AppCompatActivity() {
 
-    private var itemList: MutableList<Product> = mutableListOf()
+    private val itemList: MutableList<Product> = mutableListOf()
     private val adapter: ProductAdapter = ProductAdapter()
     private lateinit var realm: Realm
 

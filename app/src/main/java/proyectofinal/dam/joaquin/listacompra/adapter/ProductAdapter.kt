@@ -35,18 +35,22 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
         private val realm: Realm = Realm.getDefaultInstance()
 
         fun bind(lista: MutableList<Product>, productAdapter: ProductAdapter) = with(itemView) {
-            list__checkbox__comprado.setOnClickListener {
-                lista.sortBy { it.listo }
-                productAdapter.notifyDataSetChanged()
+            with(list__checkbox__comprado) {
+                setOnClickListener {
+                    lista.sortBy { it.listo }
+                    productAdapter.notifyDataSetChanged()
+                }
+                setOnCheckedChangeListener { _, isChecked ->
+                    with(realm) {
+                        beginTransaction()
+                        lista[layoutPosition].listo = isChecked
+                        copyToRealmOrUpdate(lista[layoutPosition])
+                        commitTransaction()
+                    }
+                }
+                isChecked = lista[layoutPosition].listo
+                text = lista[layoutPosition].name
             }
-            list__checkbox__comprado.setOnCheckedChangeListener { _, isChecked ->
-                realm.beginTransaction()
-                lista[layoutPosition].listo = isChecked
-                realm.copyToRealmOrUpdate(lista[layoutPosition])
-                realm.commitTransaction()
-            }
-            list__checkbox__comprado.isChecked = lista[layoutPosition].listo
-            list__checkbox__comprado.text = lista[layoutPosition].name
             list__btn__delete.setOnClickListener {
                 if (layoutPosition != -1) {
                     realm.executeTransaction {
